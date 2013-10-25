@@ -25,8 +25,6 @@ class point {
 		bool isnull() ;
 		point unit() ;
 		point unify() ;
-
-		void mark() ;
 } ;
 
 #endif

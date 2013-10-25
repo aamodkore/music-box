@@ -8,15 +8,23 @@
 
 
 void box::drawLid() {
+	GLuint Texture = loadBitmap("./img/metal.bmp");
+
+	glEnable(GL_TEXTURE_2D);
+	glColor3f(1.f,1.f,1.f) ;
+	glBindTexture(GL_TEXTURE_2D, Texture);
 	glBegin(GL_POLYGON);
-	topcolor_.gradientUp().color() ;
+	glTexCoord2f(1.0, 1.0); 
 	glVertex3f(  side_,  side_,  side_ );
-	topcolor_.color() ;
+	glTexCoord2f(1.0, 0.0); 
 	glVertex3f(  side_,  side_, -1.0*side_ );
+	glTexCoord2f(0.0, 0.0); 
 	glVertex3f( -1.0*side_,  side_, -1.0*side_ );
-	topcolor_.gradientDown().color() ;
+	glTexCoord2f(0.0, 1.0); 
 	glVertex3f( -1.0*side_,  side_,  side_ );
 	glEnd();
+	glDisable(GL_TEXTURE_2D);
+	glDeleteTextures(1, &Texture);
 }
 
 void box::drawMe() {
@@ -37,10 +45,12 @@ void box::drawMe() {
 
 void box::drawBox() {	
 	
-	GLuint Texture = loadBitmap("./img/wood.bmp");
+	GLuint Texture = loadBitmap("./img/marble.bmp");
 
 	glEnable(GL_TEXTURE_2D);
 	// glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+	glColor3f(1.f,1.f,1.f) ;
+
 	glBindTexture(GL_TEXTURE_2D, Texture);
 	glBegin(GL_QUADS);
 	glTexCoord2f(0.0, 0.0); 

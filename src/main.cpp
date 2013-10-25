@@ -82,7 +82,7 @@ void display(){
 	glPopMatrix() ;
 	drawScene() ;
 
-	if (showcurve) drawCurve() ;
+	if (showcurve && compcurve) drawCurve() ;
 	if (showpoints) drawPoints() ;
 
 	glFlush();
@@ -123,6 +123,8 @@ void normalKeys(unsigned char key, int x, int y) {
 				clickDepth = max(clickDepth-0.2f,1.f) ; break ;
 			case 'P' : case 'p' :	// Show/hide points
 				showpoints = !showpoints ; break ;
+			case 'V' : case 'v' :	// Show/hide points
+				showcurve = !showcurve ; break ;
 			case 'C' : case 'c' :	// Create/show curve
 				computeCurve() ; break ;
 			case 'R' : case 'r' :	// Delete all points, reset animation
@@ -161,7 +163,10 @@ void timer(int v) {
 		glutPostRedisplay();
 		glutTimerFunc(1000/FPS, timer, v);
 	}
-	else animate = false ;
+	else {
+		animate = false ;
+		showpoints= showcurve = true ;
+	}
 }
 
 void moveMeFlat(float i) {
@@ -188,6 +193,7 @@ void drawRoom() {
 	GLuint stoneTexture = loadBitmap("./img/stones.bmp");
 	GLuint floorTexture = loadBitmap("./img/carpet.bmp");
 	GLuint roofTexture = loadBitmap("./img/roof.bmp");
+	GLuint doorTexture = loadBitmap("./img/door.bmp");
 	
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, brickTexture);
@@ -261,10 +267,26 @@ void drawRoom() {
 	glVertex3f( 20.0f, 25.0f, -20.0f );
 	glEnd() ;
 	
+	glBindTexture(GL_TEXTURE_2D, doorTexture);
+	glPushMatrix() ;
+		glTranslatef(-12.5f, 0.f, -19.5f) ;
+		glBegin(GL_QUADS);
+		glTexCoord2f(0.0f, 0.0f); 
+		glVertex3f(  -4.0f, 0.0f, -0.0f ); 
+		glTexCoord2f(0.0f, 1.0f); 
+		glVertex3f(  -4.0f,  19.0f, 0.0f );
+		glTexCoord2f(1.0f, 1.0f); 
+		glVertex3f( 4.0f,  19.0f, 0.0f );
+		glTexCoord2f(1.0f, 0.0f); 
+		glVertex3f( 4.0f, 0.0f, -0.0f );
+		glEnd() ;
+	glPopMatrix() ;
+	
 	glDeleteTextures(1, &stoneTexture);
 	glDeleteTextures(1, &brickTexture);
 	glDeleteTextures(1, &floorTexture);
 	glDeleteTextures(1, &roofTexture);
+	glDeleteTextures(1, &doorTexture);
 	glDisable(GL_TEXTURE_2D) ;
 	
 }
@@ -303,7 +325,7 @@ void drawFurniture() {
 	
 	/* Draw Small Teapoy */
 	glPushMatrix() ;
-		glTranslatef(-8.0f, 0.f, 5.5f) ;
+		glTranslatef(-1.0f, 0.f, 3.5f) ;
 
 		glPushMatrix() ; glTranslatef( 2.7f, 0.f, 2.7f) ; 
 		drawTableLegs(4.2f) ; glPopMatrix() ;
@@ -321,6 +343,76 @@ void drawFurniture() {
 		glTranslatef(0.f,4.2f,0.f) ;
 		glRotatef( 90.0, 1.0, 0.0, 0.0 );
 		gluDisk(qobj, 0.0f, 4.f, 40, 5);
+		glDisable(GL_TEXTURE_2D) ;
+	glPopMatrix() ;
+	
+
+	/* Draw Chair */
+	glPushMatrix() ;
+		glTranslatef(6.0f, 0.f, 5.5f) ;
+		glRotatef(-45.0f, 0.f,1.0f, 0.0f) ;
+
+		glPushMatrix() ; glTranslatef( 1.3f, 0.f, 1.3f) ; 
+		drawTableLegs(5.f) ; glPopMatrix() ;
+		glPushMatrix() ; glTranslatef(-1.3f, 0.f, 1.3f) ; 
+		drawTableLegs(5.f) ; glPopMatrix() ;
+		glPushMatrix() ; glTranslatef( 1.3f, 0.f,-1.3f) ; 
+		drawTableLegs(5.f) ; glPopMatrix() ;
+		glPushMatrix() ; glTranslatef(-1.3f, 0.f,-1.3f) ; 
+		drawTableLegs(5.f) ; glPopMatrix() ;
+
+
+		glBindTexture(GL_TEXTURE_2D, woodTexture);
+		glEnable(GL_TEXTURE_2D);
+		glBegin(GL_QUAD_STRIP);
+		glTexCoord2f(0.0f, 0.0f); 
+		glVertex3f(  -1.5, 5.f, -1.5f ); 
+		glTexCoord2f(0.0f, 1.0f); 
+		glVertex3f(  -1.5,  5.f, 1.5f );
+		glTexCoord2f(1.0f, 0.0f); 
+		glVertex3f( 1.5,  5.f, -1.5f );
+		glTexCoord2f(1.0f, 1.0f); 
+		glVertex3f( 1.5, 5.f, 1.5f );
+		glTexCoord2f(1.0f, 0.0f); 
+		glVertex3f( 1.5,  10.0f, -1.5f );
+		glTexCoord2f(1.0f, 1.0f); 
+		glVertex3f( 1.5, 10.0f, 1.5f );
+		glEnd() ;
+
+		glDisable(GL_TEXTURE_2D) ;
+	glPopMatrix() ;
+	
+	glPushMatrix() ;
+		glTranslatef(-9.0f, 0.f, 5.5f) ;
+		glRotatef(-135.f, 0.f,1.0f, 0.0f) ;
+
+		glPushMatrix() ; glTranslatef( 1.3f, 0.f, 1.3f) ; 
+		drawTableLegs(5.f) ; glPopMatrix() ;
+		glPushMatrix() ; glTranslatef(-1.3f, 0.f, 1.3f) ; 
+		drawTableLegs(5.f) ; glPopMatrix() ;
+		glPushMatrix() ; glTranslatef( 1.3f, 0.f,-1.3f) ; 
+		drawTableLegs(5.f) ; glPopMatrix() ;
+		glPushMatrix() ; glTranslatef(-1.3f, 0.f,-1.3f) ; 
+		drawTableLegs(5.f) ; glPopMatrix() ;
+
+
+		glBindTexture(GL_TEXTURE_2D, woodTexture);
+		glEnable(GL_TEXTURE_2D);
+		glBegin(GL_QUAD_STRIP);
+		glTexCoord2f(0.0f, 0.0f); 
+		glVertex3f(  -1.5, 5.f, -1.5f ); 
+		glTexCoord2f(0.0f, 1.0f); 
+		glVertex3f(  -1.5,  5.f, 1.5f );
+		glTexCoord2f(1.0f, 0.0f); 
+		glVertex3f( 1.5,  5.f, -1.5f );
+		glTexCoord2f(1.0f, 1.0f); 
+		glVertex3f( 1.5, 5.f, 1.5f );
+		glTexCoord2f(1.0f, 0.0f); 
+		glVertex3f( 1.5,  10.0f, -1.5f );
+		glTexCoord2f(1.0f, 1.0f); 
+		glVertex3f( 1.5, 10.0f, 1.5f );
+		glEnd() ;
+
 		glDisable(GL_TEXTURE_2D) ;
 	glPopMatrix() ;
 	
@@ -358,6 +450,10 @@ void drawLights() {
 	GLfloat light2_direction[] = { 1.0f, -0.4f, 0.f };
 	glShadeModel (GL_SMOOTH);
 
+	GLuint metalTexture = loadBitmap("./img/metal.bmp");
+
+	glPushMatrix() ;
+	
 	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 	glLightfv(GL_LIGHT0, GL_AMBIENT, color_white);
 	
@@ -389,6 +485,35 @@ void drawLights() {
 	if (light2) glEnable(GL_LIGHT2);
 	else glDisable(GL_LIGHT2);
 	glEnable(GL_LIGHT0);
+
+	
+		glBindTexture(GL_TEXTURE_2D, metalTexture);
+		glEnable(GL_TEXTURE_2D);
+		glColor3f(1.f,1.f,1.f) ;
+		glBegin(GL_QUAD_STRIP);
+		glTexCoord2f(0.0f, 0.0f); 
+		glVertex3f(  -20.f, 22.f, -2.5f ); 
+		glTexCoord2f(0.0f, 1.0f); 
+		glVertex3f(  -20.f,  19.5f, -2.5f );
+		glTexCoord2f(1.0f, 0.0f); 
+		glVertex3f( -19.9,  22.f, -2.5f );
+		glTexCoord2f(1.0f, 1.0f); 
+		glVertex3f( -18.5, 19.5f, -2.5f );
+		glTexCoord2f(1.0f, 0.0f); 
+		glVertex3f( -19.9,  22.f, 2.5f );
+		glTexCoord2f(1.0f, 1.0f); 
+		glVertex3f( -18.5, 19.5f, 2.5f );
+		glTexCoord2f(0.0f, 0.0f); 
+		glVertex3f(  -20.f, 22.f, 2.5f ); 
+		glTexCoord2f(0.0f, 1.0f); 
+		glVertex3f(  -20.f, 19.5f,2.5f );
+		glEnd() ;
+		glDisable(GL_TEXTURE_2D);
+		glDeleteTextures(1, &metalTexture);
+	
+
+	glPopMatrix() ;
+
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_COLOR_MATERIAL);
 	
