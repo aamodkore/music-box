@@ -19,9 +19,8 @@ class point {
 
 		bool isnull() ;
 		point unit() ;
-} ;
 
-const static point null_point(0.f,0.f,0.f); 
-const static point ORIGIN(0.f,0.f,0.f) ;
+		void mark() ;
+} ;
 
 #endif

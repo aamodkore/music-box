@@ -77,7 +77,7 @@ $(BINDIR)/$(TARGET): $(OBJS)
 	then $(PRINTF) $(ERR_FMT) $(ERR_STRING) && $(CAT) temp.log; \
 	elif test -s temp.log; \
 	then $(PRINTF) $(WARN_FMT) $(WARN_STRING) && $(CAT) temp.log; \
-	else printf "${OK_COLOR}%30s\n${NO_COLOR}" "[OK]"; \
+	else printf "${OK_COLOR}%30s\n${NO_COLOR}" "[DONE]"; \
 	fi;
 	@$(RM) -f temp.log temp.err
 

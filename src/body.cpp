@@ -25,7 +25,7 @@ void body::initialise() {
 	hip_ = new bodyNode (0.0,0.0,0.0) ;
 	glNewList(hip_->displayList_, GL_COMPILE);
 		glPushMatrix() ;
-			glColor3f(0.8f, 0.8f, 0.8f) ;
+			glColor3f(0.f, 0.f, 0.f) ;
 			glTranslatef( 0.0f, 0.25f, 0.0f );
 			glRotatef( 90.0, 1.0, 0.0, 0.0 );
 			gluCylinder(qobj, 0.5f, 0.55f, 0.7f, 15, 5);
@@ -36,7 +36,7 @@ void body::initialise() {
 	torso_ = new bodyNode (0.0,0.25,0.0) ;
 	glNewList(torso_->displayList_, GL_COMPILE);
 		glPushMatrix() ;
-			glColor3f(0.8f, 0.8f, 0.8f) ;
+			glColor3f(0.f, 0.f, 0.f) ;
 			glTranslatef( 0.0f, 0.1f, 0.0f );
 			glutSolidSphere(0.55f,10,10);
 		glPopMatrix() ;
@@ -159,7 +159,7 @@ void body::initialise() {
 
 	/* Design chest (Torso) */
 	chest_ = new bodyNode(0.0, 0.0, 0.0) ;
-	GLuint suitTexture = loadBitmap("./img/suit1.bmp");
+	GLuint suitTexture = loadBitmap("./img/suit2.bmp");
 	glNewList(chest_->displayList_, GL_COMPILE);
 		glPushMatrix() ;
 			glColor3f(0.8f, 0.8f, 0.8f) ;
@@ -168,12 +168,13 @@ void body::initialise() {
 			glBindTexture(GL_TEXTURE_2D, suitTexture);
 			glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
 			glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
-			glEnable(GL_TEXTURE_GEN_S);
-			glEnable(GL_TEXTURE_GEN_T);
+			glDisable(GL_TEXTURE_GEN_S);
+			glDisable(GL_TEXTURE_GEN_T);
 			gluCylinder(qobj, 0.5f, 0.7f, 1.4f, 15, 5);
 			glTranslatef( 0.0f, 0.0f, 1.4f);
-			gluDisk(qobj, 0.0f, 0.7f, 15, 1);
 			glDisable(GL_TEXTURE_2D);
+			glColor3f(0.0f, 0.0f, 0.0f) ;
+			gluDisk(qobj, 0.0f, 0.7f, 15, 1);
 			
 		glPopMatrix() ;
 	glEndList();
@@ -182,7 +183,7 @@ void body::initialise() {
 	/* Design arms */
 	glNewList(parts_+3, GL_COMPILE);
 		glPushMatrix() ;
-			glColor3f(0.96f, 0.76f, 0.47f) ;
+			glColor3f(0.f, 0.f, 0.f) ;
 			glTranslatef( 0.0f, 0.0f, 0.0f );
 			glutSolidSphere(0.15f,10,10);
 			glTranslatef( 0.0f, -0.09f, 0.0f );
@@ -210,7 +211,7 @@ void body::initialise() {
 	/* Design forearms */
 	glNewList(parts_+4, GL_COMPILE);
 		glPushMatrix() ;
-			glColor3f(0.96f, 0.76f, 0.47f) ;
+			glColor3f(0.f, 0.f, 0.f) ;
 			glTranslatef( 0.0f, -0.09f, 0.0f );
 			glutSolidSphere(0.15f,10,10);
 			glTranslatef( 0.0f, 0.0f, 0.0f );
@@ -237,7 +238,7 @@ void body::initialise() {
 	/* Design Hands */
 	glNewList(parts_+5, GL_COMPILE);
 		glPushMatrix() ;
-			glColor3f(0.0f, 0.3f, 0.1f) ;
+			glColor3f(0.96f, 0.76f, 0.47f) ;
 			glBegin(GL_QUAD_STRIP) ; //base
 				glVertex3f(  0.13f, 0.0, 0.1 );//fr
 				glVertex3f(  0.16f,-0.3, 0.12 ); 

@@ -133,6 +133,8 @@ void box::openLid(double step) {
 	else angle_ = 135.0 ;
 }
 
+double box::getAngle() { return angle_ ;}
+
 box::box(double side, double angle) :
 	handlecolor_(0.0,0.0,0.0),
 	frontcolor_(0.0,0.0,0.0),
