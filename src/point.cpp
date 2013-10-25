@@ -27,6 +27,19 @@ point point::operator / (float f) {
 	return *res ;
 }
 
+point point::operator += (point p) {
+	x+=p.x; y+=p.y; z+=p.z; return *this ;
+}
+point point::operator -= (point p) {
+	x-=p.x; y-=p.y; z-=p.z;	return *this ;
+}
+point point::operator *= (float f) {
+	x*=f; y*=f; z*=f; return *this ;
+}
+point point::operator /= (float f) {
+	x/=f; y/=f; z/=f; return *this ;
+}
+
 point point::operator = (point p) {
 	x = p.x; y = p.y; z = p.z;
 	return *this ;
@@ -46,4 +59,13 @@ point point::unit() {
 		*res = *this/factor ;
 		return * res ;
 	}
+}
+
+point point::unify() {
+	float factor = x*x + y*y + z*z ;
+	if (factor!=0.f)  {
+		factor = sqrt(factor) ;
+		x=x/factor;y=y/factor;z=z/factor;
+	}
+	return * this ;
 }

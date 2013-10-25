@@ -15,10 +15,16 @@ class point {
 		point operator * (float) ;
 		point operator / (float) ;
 
+		point operator += (point) ;
+		point operator -= (point) ;
+		point operator *= (float) ;
+		point operator /= (float) ;
+
 		point operator = (point) ;
 
 		bool isnull() ;
 		point unit() ;
+		point unify() ;
 
 		void mark() ;
 } ;

@@ -317,7 +317,7 @@ void body::initialise() {
 		glPushMatrix() ;
 			glColor3f(0.96f, 0.76f, 0.47f) ;
 			glRotatef( -90.0, 1.0, 0.0, 0.0 );
-			gluCylinder(qobj, 0.26f, 0.34f, 0.7f, 15, 5);
+			gluCylinder(qobj, 0.26f, 0.34f, 0.68f, 15, 5);
 			gluDisk(qobj, 0.0f, 0.26f, 15, 1);
 			
 			glColor3f(0.5f, 0.0f, 0.1f) ;

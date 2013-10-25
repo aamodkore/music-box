@@ -1,7 +1,7 @@
 .SUFFIXES: .cpp .hpp
 
 #VERSION
-VERSION	= 4.0
+VERSION	= 6.2
 
 # Programs
 SHELL 	= bash
