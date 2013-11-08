@@ -78,7 +78,7 @@ void display(){
 			container.drawMe() ;
 		glPopMatrix() ;
 		glPushMatrix() ;
-			glTranslatef(0.f,1.1f,0.f) ;
+			glTranslatef(0.f,container.getAngle()/90.0,0.f) ;
 			glScalef(0.3f, 0.3f, 0.3f) ;
 			man.draw() ;
 		glPopMatrix() ;
@@ -158,9 +158,9 @@ void normalKeys(unsigned char key, int x, int y) {
 	else if (animate && !dance) {
 		switch(key) {
 		 	case 'Z' : case 'z' :
-		 		container.openLid(3.0) ; break ;
+		 		container.openLid(1.0) ; break ;
 	 		case 'X' : case 'x' :
-		 		container.closeLid(3.0) ; break ;
+		 		container.closeLid(1.0) ; break ;
 	 		case 'N' : case 'n' :
 		 		focus = NULL ; break ;
 	 		case 'H': case 'h' :
@@ -185,6 +185,18 @@ void normalKeys(unsigned char key, int x, int y) {
 	 			focus =  man.lleg_ ; break ;
 			case 'S': case 's' :
 	 			focus =  man.rleg_ ; break ;
+			case 'I': case 'i' :
+	 			focus =  man.lhand_ ; break ;
+			case 'E': case 'e' :
+	 			focus =  man.rhand_ ; break ;
+			case 'J': case 'j' :
+	 			focus =  man.lfoot_ ; break ;
+			case 'D': case 'd' :
+	 			focus =  man.rfoot_ ; break ;
+			case 'Y': case 'y' :
+	 			focus =  man.neck_ ; break ;
+			case 'U': case 'u' :
+	 			focus =  man.head_ ; break ;
 
 	 		case 13 :
 	 			store_keyframe() ; break ;
@@ -572,9 +584,6 @@ void drawLights() {
 	glLightfv(GL_LIGHT0, GL_AMBIENT, color_white);
 	
 	glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
-	// glLightf(GL_LIGHT1, GL_CONSTANT_ATTENUATION, 1.0);
-	// glLightf(GL_LIGHT1, GL_LINEAR_ATTENUATION, 0.05);
-	// glLightf(GL_LIGHT1, GL_QUADRATIC_ATTENUATION, 0.01);
 	glLightfv(GL_LIGHT1, GL_AMBIENT, color_white);
 	glLightfv(GL_LIGHT1, GL_DIFFUSE, color_bright);
 	glLightfv(GL_LIGHT1, GL_SPECULAR, color_bright);
@@ -583,8 +592,6 @@ void drawLights() {
 	glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, 1.0);
 	
 	glLightfv(GL_LIGHT2, GL_POSITION, light2_position);
-	// glLightf(GL_LIGHT2, GL_LINEAR_ATTENUATION, 2.5);
-	// glLightf(GL_LIGHT2, GL_QUADRATIC_ATTENUATION, 0.5);
 	glLightfv(GL_LIGHT2, GL_AMBIENT, color_bright);
 	glLightfv(GL_LIGHT2, GL_DIFFUSE, color_yellow);
 	glLightf(GL_LIGHT2, GL_SPOT_CUTOFF, 30.0);
@@ -623,11 +630,49 @@ void drawLights() {
 		glVertex3f(  -20.f, 19.5f,2.5f );
 		glEnd() ;
 		glDisable(GL_TEXTURE_2D);
-		glDeleteTextures(1, &metalTexture);
-	
+		
+		glPushMatrix() ;
+
+			glTranslatef(px-3.f, 8.01f, pz+3.8f) ;
+			glRotatef(-90.0,0.f,1.f,0.f) ;
+			glBindTexture(GL_TEXTURE_2D, metalTexture);
+			glEnable(GL_TEXTURE_2D);
+			glColor3f(1.f,1.f,1.f) ;
+			glBegin(GL_QUADS);
+			glTexCoord2f(0.0f, 0.0f); 
+			glVertex3f(  0.f, 0.f, 0.f ); 
+			glTexCoord2f(0.0f, 1.0f); 
+			glVertex3f(  0.f,  0.f, 1.5f );
+			glTexCoord2f(1.0f, 1.0f); 
+			glVertex3f( 1.1f,  0.f, 1.5f );
+			glTexCoord2f(1.0f, 0.0f); 
+			glVertex3f( 1.1f, 0.f, 0.f );
+			glEnd() ;
+			glDisable(GL_TEXTURE_2D);
+		
+			glPushMatrix() ;
+				glColor3f(0.01f, 0.1f, 0.01f) ;
+				glTranslatef(0.55f,0.f,0.55f) ;
+				glRotatef( -30.0, -0.2, 0.1, 1.0 );
+				glRotatef( -90.0, 1.0, 0.0, 0.0 );
+				gluCylinder(qobj, 0.1f, 0.08f, 2.2f, 15, 5);
+				glTranslatef(0.f,0.0f,2.1f) ;
+				glRotatef( 40.0, 0.0, 0.01, 1.0 );
+				glRotatef( -90.0, 1.0, 0.0, 0.0 );
+				gluCylinder(qobj, 0.08f, 0.08f, 2.f, 15, 5);
+				glColor3f(0.6f, 0.1f, 0.31f) ;
+				glTranslatef(0.f,0.0f,1.9f) ;
+				glRotatef( 40.0, 0.0, 0.01, 1.0 );
+				glRotatef( -90.0, 1.0, 0.0, 0.0 );
+				gluCylinder(qobj, 0.8f, 1.2f, 1.f, 15, 5);
+			glPopMatrix() ;
+
+		glPopMatrix() ;
+			
 
 	glPopMatrix() ;
 
+	glDeleteTextures(1, &metalTexture);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_COLOR_MATERIAL);
 	
@@ -708,6 +753,7 @@ void reset() {
 	x=-16.0f; y=10.8f; z=16.0f;
 	lx=1.2f; ly=0.f; lz=-1.0f;
 	angle=pi+atan(lx/lz); animate = false ;
+	clickDepth=5.0f ;
 	flyover.reset() ; 
 	man.reset() ;
 	fout.open("./data/keyframes.txt", ios::out) ;

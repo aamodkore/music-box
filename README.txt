@@ -18,7 +18,7 @@ To compile run 'make' (See Makefile). Executable is formed in 'bin' folder.
 
 
 HTML Report and Key Functionality Doc:
-http://www.cse.iitb.ac.in/~aamod/cs475/assignment2_2/
+http://www.cse.iitb.ac.in/~aamod/cs475/assignment2_3/
 
 Most Updated Code : 
 Github Repo: https://github.com/aamodkore/music-box

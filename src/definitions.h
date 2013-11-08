@@ -16,7 +16,7 @@
 static float clickDepth=5.0f;
 static float x=-16.0f, y=10.8f, z=16.0f;
 static float lx=1.2f, ly=0.f, lz=-1.0f;
-static float px=16.0f, py=9.0f, pz=-18.4f;
+static float px=16.0f, py=9.0f, pz=-17.0f;
 static float ratio, pi=3.14159f;
 static float angle=pi+atan(lx/lz); 
 static int height,width;
@@ -32,7 +32,7 @@ vector<double> prev_keyframe, res_keyframe ;
 static bool light1=true, light2=true ;
 static bool showcurve=false, showpoints=true;
 static bool compcurve=false, animate=false;
-static bool dance=false, imagedump=false;
+static bool dance=false, imagedump=true;
 
 static GLuint roomList, furnitureList ;
 
@@ -72,7 +72,7 @@ void capture_frame(unsigned int) ;
 void begin_interpolation() ;
 
 static bodyNode* focus=NULL ;
-static box container(0.5,100.f) ;
+static box container(0.5,0.f) ;
 static body man ;
 static bezierCurve flyover ;
 
