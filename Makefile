@@ -22,6 +22,7 @@ SRCDIR = $(PROJECT_ROOT)/src
 OBJDIR = $(PROJECT_ROOT)/obj
 BINDIR = $(PROJECT_ROOT)/bin
 IMGDIR = $(PROJECT_ROOT)/img
+RECDIR = $(PROJECT_ROOT)/data
 
 # Compiler and Linker flags
 CPPFLAGS =-g 
@@ -56,7 +57,8 @@ setup:
 	@$(ECHO) "Setting up compilation..."
 	@mkdir -p $(OBJDIR)
 	@mkdir -p $(BINDIR)
-	@$(CP) -r $(IMGDIR) $(BINDIR)
+	@mkdir -p $(RECDIR)
+	@$(CP) -r $(IMGDIR) $(RECDIR) $(BINDIR)
 	
 
 $(OBJS): $(OBJDIR)/%.o : $(SRCDIR)/%.cpp
@@ -96,7 +98,7 @@ clean:
 	 
 distclean: clean
 	@$(PRINTF) "Removing compiled files ... "
-	@$(RM) -rf $(BINDIR) *.tgz
+	@$(RM) -rf $(BINDIR) $(RECDIR) *.tgz
 	@$(PRINTF) "${OK_COLOR}%40s\n${NO_COLOR}" "[OK]"
 	
 	

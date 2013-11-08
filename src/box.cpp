@@ -144,6 +144,7 @@ void box::openLid(double step) {
 }
 
 double box::getAngle() { return angle_ ;}
+void box::setAngle(double a) { angle_ = a;}
 
 box::box(double side, double angle) :
 	handlecolor_(0.0,0.0,0.0),

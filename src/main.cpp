@@ -1,4 +1,6 @@
 #include <iostream>
+#include <cstdlib>
+#include <fstream>
 #include <cmath>
 #include <algorithm>
 #include <GL/glut.h>
@@ -6,12 +8,13 @@
 #include "box.hpp"
 #include "body.hpp"
 #include "definitions.h"
+#include "interpolate.h"
 #include "loadBitmap.h"
 
 using namespace std ;
 
 int main(int argc, char* argv[]){
- 
+
 	//  Initialize GLUT and process user parameters
 	glutInit(&argc,argv);
 	
@@ -92,11 +95,25 @@ void display(){
 
 void specialKeys( int key, int x, int y ) {
  	if (!animate) {
-		switch (key) {		// Move around
+	  switch (key) {		// Move around
 		  case GLUT_KEY_LEFT : angle += 0.05f; orientMe(angle);break;
 		  case GLUT_KEY_RIGHT : angle -=0.05f; orientMe(angle);break;
 		  case GLUT_KEY_UP : moveMeFlat(1);break;
 		  case GLUT_KEY_DOWN : moveMeFlat(-1);break;
+		  case GLUT_KEY_PAGE_UP : moveMeHigh(1) ; break ;
+		  case GLUT_KEY_PAGE_DOWN : moveMeHigh(-1) ; break ;
+	  	}	
+	}
+	else if (animate && !dance) {
+		if (focus!=NULL) {
+			switch (key) {		// Move around
+			  case GLUT_KEY_LEFT : focus->changeAngleY(1.0) ; break ;
+			  case GLUT_KEY_RIGHT : focus->changeAngleY(-1.0) ; break ;
+			  case GLUT_KEY_UP : focus->changeAngleX(1.0) ; break ;
+			  case GLUT_KEY_DOWN : focus->changeAngleX(-1.0) ; break ;
+			  case GLUT_KEY_PAGE_UP : focus->changeAngleZ(1.0) ; break ;
+			  case GLUT_KEY_PAGE_DOWN : focus->changeAngleZ(-1.0) ; break ;
+	  		}
 	  	}
 	}
 	glutPostRedisplay();
@@ -104,17 +121,23 @@ void specialKeys( int key, int x, int y ) {
 }
 
 void normalKeys(unsigned char key, int x, int y) {
-	if (key==27) exit(0) ;
+	switch(key) { 
+		case 27 : exit(0) ;
+		case '0' :	// Delete all points, reset animation
+			reset() ;
+			break ;
+		case '1' :	// Light 1
+			light1 = !light1 ; break ;
+		case '2' :	// Light 2
+			light2 = !light2 ; break ;
+	}		
+
 	if (!animate) {
 		switch(key) {
-			case 32 :		// Begin animation
+			case 32 : 	// Begin animation
 				anime_step=0 ; animate = true ;
 				glutTimerFunc(1000, timer, 0); break ;
 
-			case 'Z' : case 'z' :	// Light 1
-				light1 = !light1 ; break ;
-			case 'X' : case 'x' :	// Light 2
-				light2 = !light2 ; break ;
 			case 'D' : case 'd' :	// Delete last entered point
 				flyover.pop_back() ; break ;
 			case '+' : case '=' :	// Increase click depth
@@ -127,10 +150,40 @@ void normalKeys(unsigned char key, int x, int y) {
 				showcurve = !showcurve ; break ;
 			case 'C' : case 'c' :	// Create/show curve
 				computeCurve() ; break ;
-			case 'R' : case 'r' :	// Delete all points, reset animation
-				compcurve = showcurve = false ;
-				flyover.reset() ;
 		}	
+	}
+	else if (animate && !dance) {
+		switch(key) {
+		 	case 'N' : case 'n' :
+		 		focus = NULL ; break ;
+	 		case 'H': case 'h' :
+	 			focus =  man.hip_ ; break ;
+			case 'T': case't' :
+	 			focus =  man.torso_ ; break ;
+			case 'G': case 'g' :
+	 			focus =  man.chest_ ; break ;
+			case 'P': case 'p' :
+	 			focus =  man.larm_ ; break ;
+			case 'Q': case 'q' :
+	 			focus =  man.rarm_; break ;
+			case 'O': case 'o' :
+	 			focus =  man.lelbow_ ; break ;
+			case 'W': case 'w' :
+	 			focus =  man.relbow_ ; break ;
+			case 'L': case 'l' :
+	 			focus =  man.lthigh_ ; break ;
+			case 'A': case 'a' :
+	 			focus =  man.rthigh_ ; break ;
+			case 'K': case 'k' :
+	 			focus =  man.lleg_ ; break ;
+			case 'S': case 's' :
+	 			focus =  man.rleg_ ; break ;
+
+	 		case 13 :
+	 			store_keyframe() ; break ;
+	 		case 32 :
+	 			begin_interpolation() ; break ;
+		}
 	}
 	glutPostRedisplay();
 }
@@ -156,16 +209,37 @@ void timer(int v) {
 	if (!compcurve) computeCurve() ;
 	showpoints= showcurve = false ;
 	if (anime_step < steps) {
+		dance = true ;
 		glLoadIdentity();
 		gluLookAt(curve[anime_step].x, curve[anime_step].y, curve[anime_step].z, 
 			px, py, pz, 0.0f, 1.0f, 0.0f);
-		anime_step++ ;
 		glutPostRedisplay();
+		// if (anime_step>0 && imagedump) capture_frame(anime_step) ;
+		anime_step++ ;
 		glutTimerFunc(1000/FPS, timer, v);
 	}
 	else {
-		animate = false ;
-		showpoints= showcurve = true ;
+		dance=false ;
+		fout.open("./data/keyframes.txt", ios::out) ;
+		fout.close() ;
+	}
+}
+
+void record(int v) {
+	prev_angle = curr_angle ;
+	prev_l1=curr_l1; prev_l2=curr_l2; 
+	interpolate(0.0, keyframe, keyframe, prev_keyframe) ;
+	
+	if (fin >> light1 >> light2) {
+		fin >>curr_angle ; container.setAngle(curr_angle) ;
+		readFrom(fin, keyframe) ;
+		glutPostRedisplay();
+		if (imagedump) capture_frame(anime_step) ;
+		anime_step++ ;
+		glutTimerFunc(1000/FPS, record, v);
+	}
+	else {
+		fin.close() ;
 	}
 }
 
@@ -173,6 +247,13 @@ void moveMeFlat(float i) {
 	x = min(max(x + i*(lx)*0.1, -19.0), 19.0);
 	z = min(max(z + i*(lz)*0.1, -19.0), 19.0);
 
+	glLoadIdentity();
+	gluLookAt(x, y, z, x + lx,y + ly,z + lz, 0.0f,1.0f,0.0f);  
+}
+
+void moveMeHigh(float i) {
+	y = min(max(y + i*0.1, 1.0), 24.0);
+	
 	glLoadIdentity();
 	gluLookAt(x, y, z, x + lx,y + ly,z + lz, 0.0f,1.0f,0.0f);  
 }
@@ -567,12 +648,11 @@ void drawPoints() {
 		glTranslatef(p.x, p.y, p.z) ;
 		glutSolidSphere(0.1f,10,10);
 		glPopMatrix() ;
-		// cout << "Yeaaa me "<< i<< endl ;
 	}
 }
 
 void mouseClick(int button, int state,int xc, int yc) {
-	if (state==GLUT_UP) {
+	if (state==GLUT_UP && !animate) {
 		float xd=2.0f*ratio*tan(pi/8.f)*(xc-width/2)/(float) width ;
 		float yd=2.0f*tan(pi/8.f)*(yc-height/2)/(float) height ;
 		point curr(x,y,z), strght(lx,ly,lz), 
@@ -587,5 +667,63 @@ void mouseClick(int button, int state,int xc, int yc) {
 
 		flyover.push_back(aim+curr) ;
 		glutPostRedisplay() ;
+	}
+}
+
+void reset() {
+	compcurve = showcurve = false ;
+	x=-16.0f; y=10.8f; z=16.0f;
+	lx=1.2f; ly=0.f; lz=-1.0f;
+	angle=pi+atan(lx/lz); animate = false ;
+	flyover.reset() ; 
+	man.reset() ;
+	fout.open("./data/keyframes.txt", ios::out) ;
+	fout.close() ;
+	glLoadIdentity();
+	gluLookAt(x, y, z, x + lx,y + ly,z + lz, 0.0f, 1.0f, 0.0f);
+}
+
+/************************************************************************************************/
+
+void store_keyframe() {
+	fout.open("./data/keyframes.txt", ios::app) ;
+	fout << light1 << endl << light2 << endl << container.getAngle() << endl ;
+	man.hip_->store(keyframe) ;
+	printTo(fout, keyframe) ;
+
+	fout.close() ;
+}
+
+
+void capture_frame(unsigned int framenum){
+	//global pointer float *pRGB
+	pRGB = new unsigned char [3 * (width+1) * (height + 1) ];
+
+
+	// set the framebuffer to read
+	//default for double buffered
+	glReadBuffer(GL_BACK);
+
+	glPixelStoref(GL_PACK_ALIGNMENT,1);//for word allignment
+
+	glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, pRGB);
+	char filename[200];
+	sprintf(filename,"./data/frame_%05d.ppm",framenum);
+	ofstream out(filename, ios::out);
+	out<<"P6"<<endl;
+	out<<width<<" "<<height<<" 255"<<endl;
+	out.write(reinterpret_cast<char const *>(pRGB), (3 * (width+1) * (height + 1)) * sizeof(int));
+	out.close();
+
+	//function to store pRGB in a file named count
+	delete pRGB;
+}
+
+void begin_interpolation() {
+	fin.open("./data/keyframes.txt", ios::in) ;
+	if (fin >> light1 >> light2) {
+		fin >>curr_angle ; container.setAngle(curr_angle) ;
+		readFrom(fin, keyframe) ;
+		glutTimerFunc(1000/FPS, record, 0);
 	}
 }

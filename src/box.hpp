@@ -33,6 +33,7 @@ class box {
 		
 		void closeLid(double step) ;
 		void openLid(double step) ;
+		void setAngle(double) ;
 		double getAngle() ;
 		
 } ;

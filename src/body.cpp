@@ -357,3 +357,7 @@ void body::initialise() {
 void body::draw() {
 	if (hip_!=NULL) hip_->draw() ;
 }
+
+void body::reset() {
+	if (hip_!=NULL) hip_->reset() ;
+}

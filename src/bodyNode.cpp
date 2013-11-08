@@ -61,3 +61,34 @@ void bodyNode::draw() {
 				subNodes_[i]->draw() ;
 	glPopMatrix() ;
 }
+
+void bodyNode::storeVec(vector<double>& v) {
+	v.push_back(angleX_); v.push_back(angleY_); v.push_back(angleZ_);
+	for (int i=0; i<subNodes_.size(); i++) 
+		subNodes_[i]->storeVec(v) ;
+}
+
+void bodyNode::store(vector<double>& v) {
+	v.clear() ; storeVec(v) ;
+}
+
+void bodyNode::read(vector<double>& v) {
+	readVec(v,0) ;
+}
+
+int bodyNode::readVec(vector<double>& v, int index) {
+	if (index<0 || index+4>v.size()) {cout << "sfdgdhtyt" << endl;return -1 ;}
+	angleX_ = v[index] ; index++ ;
+	angleY_ = v[index] ; index++ ;
+	angleZ_ = v[index] ; index++ ;
+	for (int i=0; i<subNodes_.size(); i++) {
+		index = subNodes_[i]->readVec(v,index) ;
+	}
+	return index ;
+}
+
+void bodyNode::reset() {
+	angleX_ = angleY_ = angleZ_ = 0 ;
+	for (int i=0; i<subNodes_.size(); i++) 
+		subNodes_[i]->reset() ;
+}

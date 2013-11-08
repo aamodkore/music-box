@@ -22,6 +22,8 @@ class body {
 
 		void draw() ;			// Calls the recursive draw function
 								// Starting with the 'hip'
+
+		void reset() ;			// Resets to default position
 } ;
 
 #endif

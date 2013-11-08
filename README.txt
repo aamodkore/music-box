@@ -1,7 +1,7 @@
 ****************** *******************  ******************* *******************
 
 CS 475 Computer Graphics
-Assignment 2 Part 2
+Assignment 2 Part 3
 
 110050004	Aamod Kore
 
@@ -26,23 +26,8 @@ Github Repo: https://github.com/aamodkore/music-box
 
 ****************** *******************  ******************* *******************
 
-Keyboard Bindings (refer report for more information: 
-		http://www.cse.iitb.ac.in/~aamod/cs475/assignment2_2/)
--------------------------------------------------------
-Key(s) 			|	Functionality
-----------------+--------------------------------------
-Z , X 			|	Toggle room/table lights
-P 				|	Show/hide control points
-C 				| 	Create Bezier curve
-V 				|	Show/hide curve
-D 				|	Delete last entered point
-R 				|	Delete all points. Reset
-+ , -			|	Increase/decrease click depth
-<Space>			|	Begin Animation
-Arrow Keys		|	Move about room
-Mouse click 	| 	Create new control point
-<Esc>			|	Exit
--------------------------------------------------------
+Keyboard Bindings (refer report: 
+		http://www.cse.iitb.ac.in/~aamod/cs475/assignment2_3/)
 
 
 
