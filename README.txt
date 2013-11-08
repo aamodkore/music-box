@@ -31,8 +31,7 @@ Keyboard Bindings (refer report:
 
 
 By default, saving frames to images is enabled. This causes the animation to be 
-quite slow. The frame saving can be disabled/enabled using the 'B' key. Also it 
-is better to keep SWAP memory off ("sudo swapoff -a")
+quite slow. The frame saving can be disabled/enabled using the 'B' key.
 
 The image frames are saved in the 'data' folder. 
 To create a video out off the images run these commands in the 'data' folder:
