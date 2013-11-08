@@ -130,6 +130,9 @@ void normalKeys(unsigned char key, int x, int y) {
 			light1 = !light1 ; break ;
 		case '2' :	// Light 2
 			light2 = !light2 ; break ;
+		case 'B' : case 'b' :
+			imagedump = !imagedump ;
+			cout << "Music-box:: ANIMATION ::Frame capture mode set: O" << ((imagedump)?('N'):('F')) << endl ;
 	}		
 
 	if (!animate) {
@@ -154,7 +157,11 @@ void normalKeys(unsigned char key, int x, int y) {
 	}
 	else if (animate && !dance) {
 		switch(key) {
-		 	case 'N' : case 'n' :
+		 	case 'Z' : case 'z' :
+		 		container.openLid(3.0) ; break ;
+	 		case 'X' : case 'x' :
+		 		container.closeLid(3.0) ; break ;
+	 		case 'N' : case 'n' :
 		 		focus = NULL ; break ;
 	 		case 'H': case 'h' :
 	 			focus =  man.hip_ ; break ;
@@ -182,7 +189,8 @@ void normalKeys(unsigned char key, int x, int y) {
 	 		case 13 :
 	 			store_keyframe() ; break ;
 	 		case 32 :
-	 			begin_interpolation() ; break ;
+	 			begin_interpolation() ; 
+	 			dance = true ; break ;
 		}
 	}
 	glutPostRedisplay();
@@ -214,32 +222,57 @@ void timer(int v) {
 		gluLookAt(curve[anime_step].x, curve[anime_step].y, curve[anime_step].z, 
 			px, py, pz, 0.0f, 1.0f, 0.0f);
 		glutPostRedisplay();
-		// if (anime_step>0 && imagedump) capture_frame(anime_step) ;
 		anime_step++ ;
+		if (anime_step>1 && imagedump) capture_frame(anime_step) ;
 		glutTimerFunc(1000/FPS, timer, v);
 	}
 	else {
 		dance=false ;
 		fout.open("./data/keyframes.txt", ios::out) ;
 		fout.close() ;
+		store_keyframe() ;
 	}
 }
 
 void record(int v) {
-	prev_angle = curr_angle ;
-	prev_l1=curr_l1; prev_l2=curr_l2; 
-	interpolate(0.0, keyframe, keyframe, prev_keyframe) ;
-	
-	if (fin >> light1 >> light2) {
-		fin >>curr_angle ; container.setAngle(curr_angle) ;
-		readFrom(fin, keyframe) ;
-		glutPostRedisplay();
-		if (imagedump) capture_frame(anime_step) ;
-		anime_step++ ;
-		glutTimerFunc(1000/FPS, record, v);
-	}
-	else {
-		fin.close() ;
+	int limit = SPACE_LIMIT/((height/100)*(width/100)*3) ;
+	if (animate && dance) {
+		if ((anime_step-steps)%rec_steps==0) {
+			prev_l1=curr_l1; prev_l2=curr_l2; prev_angle=curr_angle;
+			prev_keyframe.clear() ;
+			for (int i=0; i<keyframe.size();i++)
+				prev_keyframe.push_back(keyframe[i]) ;
+			if (fin >> curr_l1 >> curr_l2) {
+				fin >> curr_angle ;
+				container.setAngle(prev_angle); 
+				light1=prev_l1; light2=prev_l2;
+				readFrom(fin,keyframe) ;
+				man.hip_->read(prev_keyframe) ;
+				anime_step++ ;
+				glutPostRedisplay() ;
+				if (anime_step<limit && imagedump) capture_frame(anime_step) ;
+				glutTimerFunc(1000/FPS, record, v);
+			}
+			else {
+				dance = false ;
+				anime_step = steps ;
+				fin.close() ;
+			}
+		}
+		else {
+			double t = ((double) ((anime_step-steps)%rec_steps))/(double)rec_steps ;
+			container.setAngle(prev_angle*(1.0-t)+curr_angle*t); 
+			if (t<0.5) {light1=prev_l1;light2=prev_l2;}
+			else {light1=curr_l1;light2=curr_l2;}
+			res_keyframe.clear() ;
+			for (int i=0; i<keyframe.size();i++)
+				res_keyframe.push_back(keyframe[i]*t+prev_keyframe[i]*(1.0-t)) ;
+			man.hip_->read(res_keyframe) ;
+			anime_step++ ;
+			glutPostRedisplay() ;
+			if (anime_step<limit && imagedump) capture_frame(anime_step) ;
+			glutTimerFunc(1000/FPS, record, v);
+		}
 	}
 }
 
@@ -721,9 +754,13 @@ void capture_frame(unsigned int framenum){
 
 void begin_interpolation() {
 	fin.open("./data/keyframes.txt", ios::in) ;
-	if (fin >> light1 >> light2) {
+	if (fin >> curr_l1 >> curr_l2) {
 		fin >>curr_angle ; container.setAngle(curr_angle) ;
 		readFrom(fin, keyframe) ;
+		light1=curr_l1; light2=curr_l2;
+		man.hip_->read(keyframe) ;
+		glutPostRedisplay() ;
+		cout << "Beginnning interpolation now ..." << endl ;
 		glutTimerFunc(1000/FPS, record, 0);
 	}
 }

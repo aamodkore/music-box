@@ -13,9 +13,7 @@ class bodyNode {
 	double transX_, transY_, transZ_ ;
 	double angleX_, angleY_, angleZ_ ;
 	
-	int readVec(vector<double>&, int) ;
-	void storeVec(vector<double>&) ;
-
+	
 	public :
 		GLuint displayList_ ;
 		double llimitX_, llimitY_, llimitZ_ ;
@@ -33,6 +31,9 @@ class bodyNode {
 
 		void draw() ;
 		void reset() ;
+
+		int readVec(vector<double>&, int) ;
+		void storeVec(vector<double>&) ;
 
 		void store(vector<double>&) ;
 		void read(vector<double>&) ;

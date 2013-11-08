@@ -21,12 +21,13 @@ static float ratio, pi=3.14159f;
 static float angle=pi+atan(lx/lz); 
 static int height,width;
 static int anime_step = 0 ;
-static const int steps = 100, rec_steps = 50 ;
+static const int steps = 100, rec_steps = 100 ;
 static const int FPS = 20;
+static const int SPACE_LIMIT = 200000;
 
 unsigned char* pRGB ;
 vector<double> keyframe ;
-vector<double> prev_keyframe ;
+vector<double> prev_keyframe, res_keyframe ;
 
 static bool light1=true, light2=true ;
 static bool showcurve=false, showpoints=true;
@@ -37,7 +38,7 @@ static GLuint roomList, furnitureList ;
 
 GLUquadricObj* qobj ;
 /* Animation parameter*/
-static bool curr_l1, curr_l2, prev_l1, prev_l2 ;
+static int curr_l1, curr_l2, prev_l1, prev_l2 ;
 static double curr_angle, prev_angle ;
 
 const static point null_point(0.f,0.f,0.f); 
@@ -49,7 +50,8 @@ static point curve[steps+1] ;
 static ofstream fout ;
 static ifstream fin ;
 
-//
+static ifstream* pfin ;
+
 
 // Function Prototypes
 void display();
@@ -70,7 +72,7 @@ void capture_frame(unsigned int) ;
 void begin_interpolation() ;
 
 static bodyNode* focus=NULL ;
-static box container(0.5,100.0) ;
+static box container(0.5,100.f) ;
 static body man ;
 static bezierCurve flyover ;
 

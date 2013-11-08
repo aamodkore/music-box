@@ -77,7 +77,7 @@ void bodyNode::read(vector<double>& v) {
 }
 
 int bodyNode::readVec(vector<double>& v, int index) {
-	if (index<0 || index+4>v.size()) {cout << "sfdgdhtyt" << endl;return -1 ;}
+	if (index<0 || index+3>v.size()) {cout << "sfdgdhtyt " << index << " " << v.size()<< endl;return -1 ;}
 	angleX_ = v[index] ; index++ ;
 	angleY_ = v[index] ; index++ ;
 	angleZ_ = v[index] ; index++ ;
@@ -92,3 +92,4 @@ void bodyNode::reset() {
 	for (int i=0; i<subNodes_.size(); i++) 
 		subNodes_[i]->reset() ;
 }
+

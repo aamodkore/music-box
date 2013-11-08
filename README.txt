@@ -30,6 +30,15 @@ Keyboard Bindings (refer report:
 		http://www.cse.iitb.ac.in/~aamod/cs475/assignment2_3/)
 
 
+By default, saving frames to images is enabled. This causes the animation to be 
+quite slow. The frame saving can be disabled/enabled using the 'B' key. Also it 
+is better to keep SWAP memory off ("sudo swapoff -a")
+
+The image frames are saved in the 'data' folder. 
+To create a video out off the images run these commands in the 'data' folder:
+
+	mogrify -flip -format jpg frame_*.ppm
+	avconv -r 24 -s svga -f image2 -i './frame_%05d.jpg' ./movie.avi
 
 ****************** *******************  ******************* *******************
 
