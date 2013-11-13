@@ -665,6 +665,7 @@ void drawLights() {
 				glRotatef( 40.0, 0.0, 0.01, 1.0 );
 				glRotatef( -90.0, 1.0, 0.0, 0.0 );
 				gluCylinder(qobj, 0.8f, 1.2f, 1.f, 15, 5);
+				gluDisk(qobj, 0.0f, 0.8f, 15, 1);
 			glPopMatrix() ;
 
 		glPopMatrix() ;

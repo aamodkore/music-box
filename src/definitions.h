@@ -21,7 +21,7 @@ static float ratio, pi=3.14159f;
 static float angle=pi+atan(lx/lz); 
 static int height,width;
 static int anime_step = 0 ;
-static const int steps = 100, rec_steps = 100 ;
+static const int steps = 100, rec_steps = 20 ;
 static const int FPS = 20;
 static const int SPACE_LIMIT = 200000;
 
